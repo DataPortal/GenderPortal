@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Financement – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Financement & plaidoyer (FTS – placeholder)</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a href="territory.html">Territoire</a>
+      <a href="displacement.html">Déplacements</a>
+      <a href="data-quality.html">Qualité SADD</a>
+      <a class="active" href="funding.html">Financement</a>
+      <a href="evidence.html">Documents</a>
+      <a href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="filters card">
+      <div class="filter-row">
+        <label>Pays <select id="countrySelect"></select></label>
+        <label>Période <select id="periodSelect"></select></label>
+        <button id="applyBtn" class="btn">Mettre à jour</button>
+      </div>
+      <div class="meta" id="metaLine">Chargement…</div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Zones sous-financées (proxy)</h2>
+          <div class="hint">obs.indicator = underfunded_zones</div>
+        </div>
+        <div class="kpis grid-4" id="kpis"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Besoins vs financement (placeholder)</h2>
+          <div class="hint">À brancher sur FTS + HRP requirements</div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Comparatif sectoriel (demo)</div>
+          <canvas id="chart1" width="600" height="320"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Priorisation plaidoyer (placeholder)</h2>
+        <div class="hint">Combine “gender_risk_score” + sous-financement</div>
+      </div>
+      <ul id="priorities" class="alerts"></ul>
+    </section>
+  </main>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script>
+    let GEO, OBS, META;
+    function uniq(a){ return [...new Set(a)]; }
+    function fillSelect(sel, items) {
+      sel.innerHTML="";
+      items.forEach(v=>{ const o=document.createElement("option"); o.value=v; o.textContent=v; sel.appendChild(o); });
+    }
+
+    function getObs(country, admin1, period, indicator, sex="NA"){
+      return OBS.find(o => o.country===country && o.admin1===admin1 && o.period===period && o.indicator===indicator && o.sex===sex) || null;
+    }
+
+    function renderKPIs(country, period){
+      const wrap = document.getElementById("kpis");
+      const under = getObs(country, "ALL", period, "underfunded_zones", "NA")?.value ?? null;
+      wrap.innerHTML = "";
+      [
+        {k:"Nb zones sous-financées", v: under ?? "—", s:`Période ${period}`},
+        {k:"Déficit (placeholder)", v:"—", s:"FTS/HRP à intégrer"},
+        {k:"Secteur critique", v:"Protection", s:"placeholder"},
+        {k:"Message plaidoyer", v:"Cibler provinces 🔴", s:"placeholder"}
+      ].forEach(x=>{
+        const d=document.createElement("div");
+        d.className="kpi";
+        d.innerHTML = `<div class="k">${x.k}</div><div class="v">${x.v}</div><div class="s">${x.s}</div>`;
+        wrap.appendChild(d);
+      });
+    }
+
+    function renderPriorities(country, period){
+      const ul = document.getElementById("priorities");
+      ul.innerHTML = "";
+
+      const rows = OBS.filter(o =>
+        o.country===country && o.period===period &&
+        o.indicator==="gender_risk_score" && o.sex==="NA" && o.admin1!=="ALL"
+      ).sort((a,b)=>(b.value??0)-(a.value??0)).slice(0,5);
+
+      rows.forEach(r=>{
+        const li=document.createElement("li");
+        li.textContent = `${r.admin1} : risque genre ${r.value} (priorité plaidoyer)`;
+        ul.appendChild(li);
+      });
+    }
+
+    async function main(){
+      [GEO, OBS, META] = await Promise.all([
+        loadJSON("../data/geo.json"),
+        loadJSON("../data/obs.json"),
+        loadJSON("../data/metadata.json"),
+      ]);
+
+      const countrySel = document.getElementById("countrySelect");
+      const periodSel = document.getElementById("periodSelect");
+      const metaLine = document.getElementById("metaLine");
+
+      fillSelect(countrySel, uniq(GEO.admin1.map(x=>x.country)));
+      fillSelect(periodSel, uniq(OBS.map(o=>o.period)).sort());
+      metaLine.textContent = `Dernière MAJ: ${META.last_updated_utc} | Build: ${META.build_id}`;
+
+      const apply = ()=>{
+        const c = countrySel.value;
+        const p = periodSel.value;
+        renderKPIs(c, p);
+        renderPriorities(c, p);
+        drawPlaceholderBar("chart1", ["Protection","Santé","WASH"], [40,25,15], "k$");
+      };
+
+      document.getElementById("applyBtn").addEventListener("click", apply);
+      apply();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      main().catch(e => { console.error(e); alert("Erreur chargement données."); });
+    });
+  </script>
+</body>
+</html>
