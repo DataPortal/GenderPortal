@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portail Genre – ONU Femmes (MVP)</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">MVP – OCHA / UNHCR / OIM (données agrégées)</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="active" href="index.html">Accueil</a>
+      <a href="pages/territory.html">Territoire</a>
+      <a href="pages/displacement.html">Déplacements</a>
+      <a href="pages/data-quality.html">Qualité SADD</a>
+      <a href="pages/funding.html">Financement</a>
+      <a href="pages/evidence.html">Documents</a>
+      <a href="pages/snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="filters card">
+      <div class="filter-row">
+        <label>Pays
+          <select id="countrySelect"></select>
+        </label>
+        <label>Province (Admin1)
+          <select id="admin1Select"></select>
+        </label>
+        <label>Période
+          <select id="periodSelect"></select>
+        </label>
+        <button id="applyBtn" class="btn">Mettre à jour</button>
+      </div>
+      <div class="meta" id="metaLine">Chargement des métadonnées…</div>
+    </section>
+
+    <section class="kpis grid-4" id="kpis">
+      <!-- rempli en JS -->
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Carte – Score risque genre (placeholder)</h2>
+          <div class="hint">Choroplèthe par Admin1, basé sur obs.json</div>
+        </div>
+        <div id="map" class="map"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Graphiques – Placeholders</h2>
+          <div class="hint">Canvas HTML5 (pas de lib obligatoire)</div>
+        </div>
+        <div class="charts">
+          <div class="chart-box">
+            <div class="chart-title">Déplacements (F/M) – Bar</div>
+            <canvas id="chart1" width="600" height="240"></canvas>
+          </div>
+          <div class="chart-box">
+            <div class="chart-title">Tendance (6 mois) – Line</div>
+            <canvas id="chart2" width="600" height="240"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Alertes analytiques (placeholder)</h2>
+        <div class="hint">Top 3 zones critiques (règles simples côté JS)</div>
+      </div>
+      <ul id="alerts" class="alerts"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>MVP statique – GitHub Pages + ETL Python (GitHub Actions)</span>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/map.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
