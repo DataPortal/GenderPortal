@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documents – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Documents & évidence (ReliefWeb – placeholder)</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a href="territory.html">Territoire</a>
+      <a href="displacement.html">Déplacements</a>
+      <a href="data-quality.html">Qualité SADD</a>
+      <a href="funding.html">Financement</a>
+      <a class="active" href="evidence.html">Documents</a>
+      <a href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <h2>Bibliothèque (placeholder)</h2>
+        <div class="hint">MVP: liste statique. Ensuite: appel ReliefWeb API côté JS</div>
+      </div>
+
+      <div class="filters" style="margin-bottom:10px;">
+        <div class="filter-row">
+          <label>Province
+            <select id="admin1Select">
+              <option value="ALL">Toutes</option>
+              <option>Nord-Kivu</option>
+              <option>Sud-Kivu</option>
+              <option>Ituri</option>
+              <option>Kasaï</option>
+              <option>Kinshasa</option>
+              <option>Tanganyika</option>
+            </select>
+          </label>
+          <label>Type
+            <select id="typeSelect">
+              <option value="ALL">Tous</option>
+              <option>HNO</option>
+              <option>HRP</option>
+              <option>SitRep</option>
+              <option>Assessment</option>
+              <option>Analysis</option>
+            </select>
+          </label>
+          <button id="applyBtn" class="btn">Filtrer</button>
+        </div>
+      </div>
+
+      <div id="docList"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Intégration ReliefWeb (étape suivante)</h2>
+        <div class="hint">Tu pourras remplacer la liste par un fetch API</div>
+      </div>
+      <p class="meta">
+        Exemple : chercher des rapports “gender” sur RDC, filtrer par province, puis afficher titre + date + source + lien.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // Dataset demo (à remplacer par data/documents.json ou ReliefWeb API)
+    const DOCS = [
+      { title:"HNO RDC 2026 – Protection", type:"HNO", admin1:"ALL", date:"2026-01-15", source:"OCHA", url:"#"},
+      { title:"DTM Round 18 – Nord-Kivu", type:"Assessment", admin1:"Nord-Kivu", date:"2026-01-20", source:"OIM", url:"#"},
+      { title:"Situation Report – Ituri", type:"SitRep", admin1:"Ituri", date:"2026-01-28", source:"OCHA", url:"#"},
+      { title:"Gender analysis brief – Sud-Kivu", type:"Analysis", admin1:"Sud-Kivu", date:"2026-01-10", source:"UN Women", url:"#"},
+    ];
+
+    function render(list){
+      const wrap = document.getElementById("docList");
+      if (!list.length){
+        wrap.innerHTML = `<div class="meta">Aucun document trouvé.</div>`;
+        return;
+      }
+      wrap.innerHTML = list.map(d => `
+        <div class="card" style="margin:10px 0;">
+          <div class="card-header">
+            <h2 style="font-size:14px; margin:0;">${d.title}</h2>
+            <div class="hint">${d.date} • ${d.source} • ${d.type} • ${d.admin1}</div>
+          </div>
+          <a href="${d.url}" class="meta">Ouvrir</a>
+        </div>
+      `).join("");
+    }
+
+    function apply(){
+      const a1 = document.getElementById("admin1Select").value;
+      const t = document.getElementById("typeSelect").value;
+
+      const list = DOCS.filter(d =>
+        (a1==="ALL" ? true : d.admin1===a1) &&
+        (t==="ALL" ? true : d.type===t)
+      ).sort((a,b)=> b.date.localeCompare(a.date));
+
+      render(list);
+    }
+
+    document.getElementById("applyBtn").addEventListener("click", apply);
+    apply();
+  </script>
+</body>
+</html>
