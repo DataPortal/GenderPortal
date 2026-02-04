@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gender Snapshot – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Gender Snapshot (1 page) – imprimable</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a href="territory.html">Territoire</a>
+      <a href="displacement.html">Déplacements</a>
+      <a href="data-quality.html">Qualité SADD</a>
+      <a href="funding.html">Financement</a>
+      <a href="evidence.html">Documents</a>
+      <a class="active" href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="filters card no-print">
+      <div class="filter-row">
+        <label>Pays <select id="countrySelect"></select></label>
+        <label>Province (Admin1) <select id="admin1Select"></select></label>
+        <label>Période <select id="periodSelect"></select></label>
+        <button id="applyBtn" class="btn">Mettre à jour</button>
+        <button id="printBtn" class="btn" style="background:#334155;">Imprimer / PDF</button>
+      </div>
+      <div class="meta" id="metaLine">Chargement…</div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2 id="snapTitle">Gender Snapshot – …</h2>
+        <div class="hint" id="snapMeta">Sources: OCHA / UNHCR / OIM (placeholder)</div>
+      </div>
+
+      <div class="kpis grid-4" id="kpis"></div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="chart-box">
+          <div class="chart-title">Déplacements (F/M) – placeholder</div>
+          <canvas id="chart1" width="600" height="260"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Messages clés (auto – placeholder)</div>
+          <ul id="messages" class="alerts"></ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="card-header">
+          <h2>Disclaimer</h2>
+          <div class="hint">MVP</div>
+        </div>
+        <p class="meta">
+          Ce snapshot utilise des indicateurs proxy. Remplacer par les sources officielles et documenter la méthodologie de scoring SADD et risque genre.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script>
+    let GEO, OBS, META;
+
+    function uniq(a){ return [...new Set(a)]; }
+    function fillSelect(sel, items, includeAll=false){
+      sel.innerHTML="";
+      if(includeAll){
+        const o=document.createElement("option"); o.value="ALL"; o.textContent="Toutes";
+        sel.appendChild(o);
+      }
+      items.forEach(v=>{ const o=document.createElement("option"); o.value=v; o.textContent=v; sel.appendChild(o); });
+    }
+
+    function sumObs(country, admin1, period, indicator, sex){
+      return OBS.filter(o =>
+        o.country===country && o.period===period && o.indicator===indicator && o.sex===sex &&
+        (admin1==="ALL" ? true : o.admin1===admin1)
+      ).reduce((s,r)=>s+(r.value||0),0);
+    }
+    function getObs(country, admin1, period, indicator, sex="NA"){
+      return OBS.find(o=>o.country===country && o.admin1===admin1 && o.period===period && o.indicator===indicator && o.sex===sex) || null;
+    }
+
+    function renderKPIs(sel){
+      const wrap=document.getElementById("kpis");
+      const women = sumObs(sel.country, sel.admin1, sel.period, "displaced_total", "F");
+      const men = sumObs(sel.country, sel.admin1, sel.period, "displaced_total", "M");
+      const total = women + men;
+      const sadd = (sel.admin1==="ALL" ? getObs(sel.country,"ALL",sel.period,"sadd_score","NA") : getObs(sel.country, sel.admin1, sel.period, "sadd_score", "NA"))?.value ?? null;
+      const risk = (sel.admin1==="ALL" ? null : getObs(sel.country, sel.admin1, sel.period, "gender_risk_score", "NA")?.value ?? null);
+
+      const kpis = [
+        {k:"Femmes déplacées", v: formatNumber(women), s:"proxy"},
+        {k:"Hommes déplacés", v: formatNumber(men), s:"proxy"},
+        {k:"Total déplacés", v: formatNumber(total), s:"proxy"},
+        {k:"Score SADD", v: sadd!==null ? `${sadd}%` : "—", s:"proxy"}
+      ];
+
+      wrap.innerHTML="";
+      kpis.forEach(x=>{
+        const d=document.createElement("div");
+        d.className="kpi";
+        d.innerHTML = `<div class="k">${x.k}</div><div class="v">${x.v}</div><div class="s">${x.s}</div>`;
+        wrap.appendChild(d);
+      });
+
+      return {women, men, total, sadd, risk};
+    }
+
+    function renderMessages(sel, stats){
+      const ul=document.getElementById("messages");
+      ul.innerHTML="";
+      const msgs = [];
+      if (stats.risk !== null) msgs.push(`${sel.admin1}: score risque genre = ${stats.risk} (proxy).`);
+      if (stats.sadd !== null && stats.sadd < 40) msgs.push(`Qualité SADD faible (${stats.sadd}%). Prioriser l’amélioration de la collecte.`);
+      if (stats.total > 500000) msgs.push(`Charge de déplacement élevée (>${formatNumber(stats.total)}). Renforcer l’analyse protection/GBV.`);
+      if (!msgs.length) msgs.push("Messages automatiques indisponibles (placeholder).");
+      msgs.forEach(m=>{ const li=document.createElement("li"); li.textContent=m; ul.appendChild(li); });
+    }
+
+    async function main(){
+      [GEO, OBS, META] = await Promise.all([
+        loadJSON("../data/geo.json"),
+        loadJSON("../data/obs.json"),
+        loadJSON("../data/metadata.json"),
+      ]);
+
+      const countrySel=document.getElementById("countrySelect");
+      const admin1Sel=document.getElementById("admin1Select");
+      const periodSel=document.getElementById("periodSelect");
+      const metaLine=document.getElementById("metaLine");
+
+      fillSelect(countrySel, uniq(GEO.admin1.map(x=>x.country)));
+      fillSelect(periodSel, uniq(OBS.map(o=>o.period)).sort());
+
+      const refreshAdmin1=()=>{
+        const c=countrySel.value;
+        const a1 = GEO.admin1.filter(x=>x.country===c).map(x=>x.admin1).sort();
+        fillSelect(admin1Sel, a1, true);
+      };
+      refreshAdmin1();
+
+      metaLine.textContent = `Dernière MAJ: ${META.last_updated_utc} | Build: ${META.build_id}`;
+
+      const apply=()=>{
+        const sel={ country:countrySel.value, admin1:admin1Sel.value, period:periodSel.value };
+
+        document.getElementById("snapTitle").textContent =
+          `Gender Snapshot – ${sel.country} • ${sel.admin1==="ALL" ? "Toutes provinces" : sel.admin1} • ${sel.period}`;
+
+        document.getElementById("snapMeta").textContent =
+          `Sources: OCHA / UNHCR / OIM (placeholder) • Build ${META.build_id}`;
+
+        const stats = renderKPIs(sel);
+        renderMessages(sel, stats);
+        drawPlaceholderBar("chart1", ["Femmes","Hommes"], [stats.women, stats.men], "");
+      };
+
+      document.getElementById("applyBtn").addEventListener("click", apply);
+      document.getElementById("printBtn").addEventListener("click", ()=>window.print());
+      countrySel.addEventListener("change", refreshAdmin1);
+
+      apply();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      main().catch(e=>{ console.error(e); alert("Erreur chargement données."); });
+    });
+  </script>
+
+  <style>
+    @media print {
+      .topbar, .no-print { display:none !important; }
+      body { background:#fff; }
+      .container { margin:0; padding:0; max-width:none; }
+      .card { box-shadow:none; border:1px solid #e5e7eb; }
+    }
+  </style>
+</body>
+</html>
