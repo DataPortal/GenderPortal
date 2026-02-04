@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Déplacements – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Déplacements (UNHCR / OIM) – placeholder</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a href="territory.html">Territoire</a>
+      <a class="active" href="displacement.html">Déplacements</a>
+      <a href="data-quality.html">Qualité SADD</a>
+      <a href="funding.html">Financement</a>
+      <a href="evidence.html">Documents</a>
+      <a href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="filters card">
+      <div class="filter-row">
+        <label>Pays <select id="countrySelect"></select></label>
+        <label>Province (Admin1) <select id="admin1Select"></select></label>
+        <label>Période <select id="periodSelect"></select></label>
+        <button id="applyBtn" class="btn">Mettre à jour</button>
+      </div>
+      <div class="meta" id="metaLine">Chargement…</div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Carte – points Admin1 (placeholder)</h2>
+          <div class="hint">Centroids + taille ~ displaced_total (F+M)</div>
+        </div>
+        <div id="map" class="map"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Profil déplacements (placeholder)</h2>
+          <div class="hint">Désagrégation sexe (si dispo)</div>
+        </div>
+        <div class="charts">
+          <div class="chart-box">
+            <div class="chart-title">Déplacés – Femmes vs Hommes</div>
+            <canvas id="chart1" width="600" height="260"></canvas>
+          </div>
+          <div class="chart-box">
+            <div class="chart-title">Tendance (placeholder)</div>
+            <canvas id="chart2" width="600" height="260"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Table – résumé (placeholder)</h2>
+        <div class="hint">Admin1, F, M, Total</div>
+      </div>
+      <div style="overflow:auto;">
+        <table class="simple-table" id="tbl"></table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script>
+    let GEO, OBS, META;
+    let map, layer;
+
+    function initMap() {
+      map = L.map("map").setView([-2.5, 23.5], 5);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18, attribution: "&copy; OpenStreetMap"
+      }).addTo(map);
+    }
+
+    function sumObs(country, admin1, period, indicator, sex) {
+      return OBS.filter(o =>
+        o.country === country &&
+        o.period === period &&
+        o.indicator === indicator &&
+        o.sex === sex &&
+        (admin1 === "ALL" ? true : o.admin1 === admin1)
+      ).reduce((s,r)=>s+(r.value||0),0);
+    }
+
+    function renderMap(country, period) {
+      if (layer) layer.remove();
+      const feats = GEO.admin1
+        .filter(a => a.country === country)
+        .map(a => {
+          const f = sumObs(country, a.admin1, period, "displaced_total", "F");
+          const m = sumObs(country, a.admin1, period, "displaced_total", "M");
+          const t = f + m;
+          return {
+            type:"Feature",
+            properties:{ admin1:a.admin1, total:t },
+            geometry:{ type:"Point", coordinates:[a.lon, a.lat] }
+          };
+        });
+
+      layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
+        pointToLayer:(ft, latlng)=>{
+          const t = ft.properties.total || 0;
+          const r = Math.max(6, Math.min(26, Math.sqrt(t)/100)); // scaling simple
+          return L.circleMarker(latlng, { radius:r, fillOpacity:0.35 });
+        },
+        onEachFeature:(ft, lyr)=>{
+          lyr.bindPopup(`<b>${ft.properties.admin1}</b><br/>Total déplacés: ${formatNumber(ft.properties.total)}`);
+        }
+      }).addTo(map);
+
+      map.fitBounds(layer.getBounds(), {padding:[20,20]});
+    }
+
+    function renderTable(country, period) {
+      const rows = GEO.admin1.filter(a=>a.country===country).map(a=>{
+        const f = sumObs(country, a.admin1, period, "displaced_total", "F");
+        const m = sumObs(country, a.admin1, period, "displaced_total", "M");
+        return { admin1:a.admin1, f, m, t:f+m };
+      }).sort((a,b)=>b.t-a.t);
+
+      const tbl = document.getElementById("tbl");
+      tbl.innerHTML = `
+        <tr><th>Admin1</th><th>Femmes</th><th>Hommes</th><th>Total</th></tr>
+        ${rows.map(r=>`<tr><td>${r.admin1}</td><td>${formatNumber(r.f)}</td><td>${formatNumber(r.m)}</td><td>${formatNumber(r.t)}</td></tr>`).join("")}
+      `;
+      tbl.className = "simple-table";
+    }
+
+    function fillSelect(sel, items, includeAll=false) {
+      sel.innerHTML = "";
+      if (includeAll) {
+        const opt = document.createElement("option");
+        opt.value="ALL"; opt.textContent="Toutes";
+        sel.appendChild(opt);
+      }
+      items.forEach(v=>{
+        const opt=document.createElement("option");
+        opt.value=v; opt.textContent=v;
+        sel.appendChild(opt);
+      });
+    }
+    function uniq(arr){ return [...new Set(arr)]; }
+
+    async function main(){
+      [GEO, OBS, META] = await Promise.all([
+        loadJSON("../data/geo.json"),
+        loadJSON("../data/obs.json"),
+        loadJSON("../data/metadata.json")
+      ]);
+
+      const countrySel = document.getElementById("countrySelect");
+      const admin1Sel = document.getElementById("admin1Select");
+      const periodSel = document.getElementById("periodSelect");
+      const metaLine = document.getElementById("metaLine");
+
+      fillSelect(countrySel, uniq(GEO.admin1.map(x=>x.country)));
+      fillSelect(periodSel, uniq(OBS.map(o=>o.period)).sort());
+
+      const refreshAdmin1 = ()=>{
+        const c = countrySel.value;
+        const a1 = GEO.admin1.filter(x=>x.country===c).map(x=>x.admin1).sort();
+        fillSelect(admin1Sel, a1, true);
+      };
+      refreshAdmin1();
+
+      metaLine.textContent = `Dernière MAJ: ${META.last_updated_utc} | Build: ${META.build_id}`;
+
+      initMap();
+
+      const apply = ()=>{
+        const c = countrySel.value;
+        const p = periodSel.value;
+        const a1 = admin1Sel.value;
+
+        const f = sumObs(c, a1, p, "displaced_total", "F");
+        const m = sumObs(c, a1, p, "displaced_total", "M");
+        drawPlaceholderBar("chart1", ["Femmes","Hommes"], [f,m], "");
+
+        drawPlaceholderLine("chart2", ["M-5","M-4","M-3","M-2","M-1","M"], [12,18,16,22,25,28]);
+
+        renderMap(c, p);
+        renderTable(c, p);
+      };
+
+      document.getElementById("applyBtn").addEventListener("click", apply);
+      countrySel.addEventListener("change", refreshAdmin1);
+
+      apply();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      main().catch(e => { console.error(e); alert("Erreur chargement données."); });
+    });
+  </script>
+
+  <style>
+    table.simple-table { width:100%; border-collapse:collapse; font-size:13px; }
+    table.simple-table th, table.simple-table td { border:1px solid #e5e7eb; padding:8px; text-align:left; }
+    table.simple-table th { background:#f9fafb; }
+  </style>
+</body>
+</html>
