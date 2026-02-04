@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analyse territoriale – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Analyse territoriale</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a class="active" href="territory.html">Territoire</a>
+      <a href="displacement.html">Déplacements</a>
+      <a href="data-quality.html">Qualité SADD</a>
+      <a href="funding.html">Financement</a>
+      <a href="evidence.html">Documents</a>
+      <a href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <h2>Analyse par territoire (placeholder)</h2>
+        <div class="hint">Même dataset obs.json, filtres identiques</div>
+      </div>
+      <div class="grid-2">
+        <div class="chart-box">
+          <div class="chart-title">Besoins vs Réponse (placeholder)</div>
+          <canvas id="t_chart1" width="600" height="260"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Qualité SADD (placeholder)</div>
+          <canvas id="t_chart2" width="600" height="260"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/charts.js"></script>
+  <script>
+    // Simple placeholders
+    window.addEventListener("DOMContentLoaded", () => {
+      drawPlaceholderBar("t_chart1", ["Protection","Santé","WASH"], [40,25,15], "USD (k)");
+      drawPlaceholderBar("t_chart2", ["Complets","Partiels","Absents"], [45,30,25], "%");
+    });
+  </script>
+</body>
+</html>
