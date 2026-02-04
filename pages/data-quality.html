@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qualité SADD – Portail Genre</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="title">Portail d’analyse genre</div>
+        <div class="subtitle">Qualité des données SADD (proxy)</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Accueil</a>
+      <a href="territory.html">Territoire</a>
+      <a href="displacement.html">Déplacements</a>
+      <a class="active" href="data-quality.html">Qualité SADD</a>
+      <a href="funding.html">Financement</a>
+      <a href="evidence.html">Documents</a>
+      <a href="snapshot.html">Snapshot</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="filters card">
+      <div class="filter-row">
+        <label>Pays <select id="countrySelect"></select></label>
+        <label>Période <select id="periodSelect"></select></label>
+        <button id="applyBtn" class="btn">Mettre à jour</button>
+      </div>
+      <div class="meta" id="metaLine">Chargement…</div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Score SADD national (placeholder)</h2>
+          <div class="hint">obs.indicator = sadd_score, sex=NA, admin1=ALL</div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Répartition qualité (placeholder)</div>
+          <canvas id="chart1" width="600" height="260"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Scores SADD par province</h2>
+          <div class="hint">Classement Admin1</div>
+        </div>
+        <div style="overflow:auto;">
+          <table class="simple-table" id="tbl"></table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Notes méthodologiques</h2>
+        <div class="hint">À remplacer par la vraie règle de scoring</div>
+      </div>
+      <ul>
+        <li><b>SADD score</b> = proxy de complétude (ex: % indicateurs critiques disponibles avec désagrégation sexe/âge).</li>
+        <li>Les scores doivent toujours afficher <b>source</b>, <b>période</b>, et un <b>quality_flag</b>.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script>
+    let GEO, OBS, META;
+
+    function uniq(arr){ return [...new Set(arr)]; }
+    function fillSelect(sel, items) {
+      sel.innerHTML = "";
+      items.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v; opt.textContent = v;
+        sel.appendChild(opt);
+      });
+    }
+
+    function getSadd(country, admin1, period){
+      const row = OBS.find(o =>
+        o.country===country && o.admin1===admin1 && o.period===period &&
+        o.indicator==="sadd_score" && o.sex==="NA"
+      );
+      return row ? row.value : null;
+    }
+
+    function renderTable(country, period){
+      const rows = GEO.admin1.filter(a=>a.country===country).map(a=>{
+        const v = getSadd(country, a.admin1, period);
+        return { admin1:a.admin1, v: v ?? null };
+      }).sort((a,b)=>(b.v??-1)-(a.v??-1));
+
+      const tbl = document.getElementById("tbl");
+      tbl.innerHTML = `
+        <tr><th>Admin1</th><th>Score SADD (%)</th></tr>
+        ${rows.map(r=>`<tr><td>${r.admin1}</td><td>${r.v ?? "—"}</td></tr>`).join("")}
+      `;
+      tbl.className = "simple-table";
+    }
+
+    async function main(){
+      [GEO, OBS, META] = await Promise.all([
+        loadJSON("../data/geo.json"),
+        loadJSON("../data/obs.json"),
+        loadJSON("../data/metadata.json")
+      ]);
+
+      const countrySel = document.getElementById("countrySelect");
+      const periodSel = document.getElementById("periodSelect");
+      const metaLine = document.getElementById("metaLine");
+
+      fillSelect(countrySel, uniq(GEO.admin1.map(x=>x.country)));
+      fillSelect(periodSel, uniq(OBS.map(o=>o.period)).sort());
+
+      metaLine.textContent = `Dernière MAJ: ${META.last_updated_utc} | Build: ${META.build_id}`;
+
+      const apply = ()=>{
+        const c = countrySel.value;
+        const p = periodSel.value;
+
+        const national = getSadd(c, "ALL", p);
+        // placeholder distribution: complet/partiel/absent
+        const complete = national ? Math.min(100, national) : 0;
+        const partial = national ? Math.max(0, 80 - national) : 40;
+        const missing = Math.max(0, 100 - complete - partial);
+        drawPlaceholderBar("chart1", ["Complets","Partiels","Absents"], [complete, partial, missing], "%");
+        renderTable(c, p);
+      };
+
+      document.getElementById("applyBtn").addEventListener("click", apply);
+      apply();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      main().catch(e => { console.error(e); alert("Erreur chargement données."); });
+    });
+  </script>
+
+  <style>
+    table.simple-table { width:100%; border-collapse:collapse; font-size:13px; }
+    table.simple-table th, table.simple-table td { border:1px solid #e5e7eb; padding:8px; text-align:left; }
+    table.simple-table th { background:#f9fafb; }
+  </style>
+</body>
+</html>
