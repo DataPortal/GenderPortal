@@ -1,0 +1,45 @@
+country: "Democratic Republic of the Congo"
+iso3: "COD"
+admin1:
+  - name: "Nord-Kivu"
+    lat: -0.9
+    lon: 29.2
+  - name: "Sud-Kivu"
+    lat: -2.5
+    lon: 28.8
+  - name: "Ituri"
+    lat: 1.6
+    lon: 30.5
+  - name: "Kasaï"
+    lat: -5.1
+    lon: 22.4
+  - name: "Kinshasa"
+    lat: -4.3
+    lon: 15.3
+  - name: "Tanganyika"
+    lat: -6.2
+    lon: 29.8
+
+periods:
+  - "2026-01"
+indicators:
+  - id: "displaced_total"
+    name: "Total déplacés (proxy)"
+    sector: "Protection"
+    unit: "persons"
+    source: "OIM/UNHCR (placeholder)"
+  - id: "gender_risk_score"
+    name: "Score risque genre (proxy)"
+    sector: "Protection"
+    unit: "score"
+    source: "Composite (placeholder)"
+  - id: "sadd_score"
+    name: "Complétude SADD (proxy)"
+    sector: "IM"
+    unit: "percent"
+    source: "IM checks (placeholder)"
+  - id: "underfunded_zones"
+    name: "Nb zones sous-financées (proxy)"
+    sector: "Funding"
+    unit: "count"
+    source: "FTS (placeholder)"
