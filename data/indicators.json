@@ -1,1 +1,36 @@
-
+{
+  "indicators": [
+    {
+      "indicator": "displaced_total",
+      "name": "Total déplacés (proxy)",
+      "sector": "Protection",
+      "unit": "persons",
+      "source_hint": "OIM/UNHCR (placeholder)",
+      "description": ""
+    },
+    {
+      "indicator": "gender_risk_score",
+      "name": "Score risque genre (proxy)",
+      "sector": "Protection",
+      "unit": "score",
+      "source_hint": "Composite (placeholder)",
+      "description": ""
+    },
+    {
+      "indicator": "sadd_score",
+      "name": "Complétude SADD (proxy)",
+      "sector": "IM",
+      "unit": "percent",
+      "source_hint": "IM checks (placeholder)",
+      "description": ""
+    },
+    {
+      "indicator": "underfunded_zones",
+      "name": "Nb zones sous-financées (proxy)",
+      "sector": "Funding",
+      "unit": "count",
+      "source_hint": "FTS (placeholder)",
+      "description": ""
+    }
+  ]
+}

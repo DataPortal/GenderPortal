@@ -1,1 +1,340 @@
-
+[
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "ALL",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 45.5,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "country"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "ALL",
+    "period": "2026-01",
+    "indicator": "underfunded_zones",
+    "sex": "NA",
+    "value": 6,
+    "source": "FTS (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "country"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Nord-Kivu",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 620000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Nord-Kivu",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 380000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Nord-Kivu",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 9.2,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Nord-Kivu",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 55,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Sud-Kivu",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 410000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Sud-Kivu",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 260000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Sud-Kivu",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 7.9,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Sud-Kivu",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 58,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Ituri",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 290000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Ituri",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 210000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Ituri",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 8.7,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Ituri",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 22,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kasaï",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 180000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kasaï",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 140000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kasaï",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 5.1,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kasaï",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 35,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kinshasa",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 60000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kinshasa",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 50000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kinshasa",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 3.2,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Kinshasa",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 62,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Tanganyika",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "F",
+    "value": 130000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Tanganyika",
+    "period": "2026-01",
+    "indicator": "displaced_total",
+    "sex": "M",
+    "value": 90000,
+    "source": "OIM/UNHCR (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "disagg": "sex"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Tanganyika",
+    "period": "2026-01",
+    "indicator": "gender_risk_score",
+    "sex": "NA",
+    "value": 6.8,
+    "source": "Composite (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "method": "rule-based demo"
+    }
+  },
+  {
+    "country": "Democratic Republic of the Congo",
+    "admin1": "Tanganyika",
+    "period": "2026-01",
+    "indicator": "sadd_score",
+    "sex": "NA",
+    "value": 41,
+    "source": "IM checks (placeholder)",
+    "quality_flag": "partial",
+    "meta": {
+      "level": "admin1"
+    }
+  }
+]
