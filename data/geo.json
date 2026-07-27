@@ -1,7 +1,7 @@
 {
   "admin1": [
     {
-      "geo_id": "d77126cb-0241-4413-acc1-7486c4c7cb2c",
+      "geo_id": "d0777cc4-f96c-41f0-b9cd-1ce034f50446",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Nord-Kivu",
@@ -10,7 +10,7 @@
       "lon": 29.2
     },
     {
-      "geo_id": "b4bdbf01-eaa7-41f9-bd9f-8da31c8eef3c",
+      "geo_id": "06a6c9ab-a9cb-4442-b753-6564385cf604",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Sud-Kivu",
@@ -19,7 +19,7 @@
       "lon": 28.8
     },
     {
-      "geo_id": "9ffb730b-93ac-462f-a0e8-96d36f75a2b0",
+      "geo_id": "9c21569d-c835-4333-9b2b-a72e06432075",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Ituri",
@@ -28,7 +28,7 @@
       "lon": 30.5
     },
     {
-      "geo_id": "95ba86cc-3678-4517-a1f3-67352ed233eb",
+      "geo_id": "36416d10-6e89-4f03-9563-6fdb70ef5c58",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Kasaï",
@@ -37,7 +37,7 @@
       "lon": 22.4
     },
     {
-      "geo_id": "aee6aa1f-c558-46ef-a0e5-b1bd3fd04927",
+      "geo_id": "b45b05f9-1c39-4fa7-aa7f-bd19cc64ed69",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Kinshasa",
@@ -46,7 +46,7 @@
       "lon": 15.3
     },
     {
-      "geo_id": "a055e066-0942-4d34-bc72-0e636ffa97a6",
+      "geo_id": "5c8a8a5e-f600-46f7-bf5d-2cdecb5e169c",
       "country": "Democratic Republic of the Congo",
       "iso3": "COD",
       "admin1": "Tanganyika",
